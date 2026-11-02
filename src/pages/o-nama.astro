@@ -81,7 +81,7 @@ const faq = [
           ))
         }
       </ol>
-      <a class="btn" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Pošalji poruku</a>
+      <a class="btn btn--solid" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Pošalji poruku</a>
     </div>
   </section>
 
@@ -168,15 +168,11 @@ const faq = [
   }
 
   .steps__num {
-    display: inline-grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--brown);
-    color: var(--on-dark);
     font-family: var(--serif);
-    font-size: 18px;
+    font-style: italic;
+    font-size: 34px;
+    line-height: 1;
+    color: var(--accent);
   }
 
   .steps h3 {
@@ -213,7 +209,8 @@ const faq = [
     list-style: none;
     padding: 20px 0;
     font-family: var(--serif);
-    font-size: 20px;
+    font-size: 21px;
+    color: var(--ink);
     display: flex;
     justify-content: space-between;
     gap: 16px;

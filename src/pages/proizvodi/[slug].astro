@@ -65,7 +65,7 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
       </ul>
 
       <div class="product__order">
-        <a class="btn" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Naruči putem Instagram DM-a</a>
+        <a class="btn btn--solid" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Naruči putem Instagram DM-a</a>
         <p>Pošalji nam naziv proizvoda u poruci · Poštarina {SITE.shipping}</p>
       </div>
 
@@ -177,8 +177,8 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
     font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.08em;
-    padding: 5px 12px;
-    border-radius: 6px;
+    padding: 3px 10px;
+    border-radius: 0;
   }
 
   .product__thumbs {
@@ -190,15 +190,15 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
   .product__thumbs button {
     width: 84px;
     padding: 0;
-    border: 2px solid transparent;
-    border-radius: 10px;
+    border: 1px solid transparent;
+    border-radius: 0;
     overflow: hidden;
     cursor: pointer;
     background: none;
   }
 
   .product__thumbs button[aria-pressed='true'] {
-    border-color: var(--rose);
+    border-color: var(--ink);
   }
 
   .product__thumbs img {
@@ -208,7 +208,7 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
   }
 
   .product__info h1 {
-    font-size: clamp(36px, 4.4vw, 56px);
+    font-size: clamp(28px, 3.2vw, 40px);
     margin-top: 10px;
   }
 
@@ -218,9 +218,10 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
   }
 
   .product__price {
-    margin-top: 18px;
+    margin-top: 14px;
     font-family: var(--serif);
-    font-size: 30px;
+    font-size: 26px;
+    color: var(--ink);
   }
 
   .product__desc {
