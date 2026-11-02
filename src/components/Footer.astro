@@ -1,9 +1,23 @@
 ---
+import Icon from './Icon.astro';
 import { SITE, url } from '../lib/site';
 import { categories } from '../data/products';
 
 const year = new Date().getFullYear();
 ---
+
+<section class="band">
+  <div class="wrap band__inner">
+    <div>
+      <h2>Naruči svoju rutinu</h2>
+      <p>Pošalji nam poruku na Instagramu – pomoći ćemo ti odabrati prave proizvode.</p>
+    </div>
+    <div class="band__actions">
+      <a class="btn btn--white" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Pošalji poruku</a>
+      <a class="btn band__ghost" href={SITE.instagram} target="_blank" rel="noopener"><Icon name="instagram" /> {SITE.handle}</a>
+    </div>
+  </div>
+</section>
 
 <footer class="footer">
   <div class="wrap footer__grid">
@@ -40,15 +54,54 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="wrap footer__bottom">
-    <p>© {year} Aurola</p>
-    <p>Prirodna kozmetika</p>
+    <p>© {year} Aurola · Prirodna kozmetika</p>
   </div>
 </footer>
 
 <style>
+  .band {
+    background: var(--wine);
+    color: rgba(255, 255, 255, 0.82);
+    padding-block: clamp(36px, 5vw, 56px);
+  }
+
+  .band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .band h2 {
+    color: var(--white);
+    font-size: clamp(22px, 2.4vw, 30px);
+  }
+
+  .band p {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .band__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .band__ghost {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .band__ghost:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--white);
+  }
+
   .footer {
-    border-top: 1px solid var(--line);
-    padding-top: clamp(56px, 7vw, 88px);
+    background: var(--pink-2);
+    padding-top: clamp(48px, 6vw, 72px);
     font-size: 13px;
   }
 
@@ -63,16 +116,14 @@ const year = new Date().getFullYear();
   }
 
   .footer__brand p {
-    margin-top: 18px;
+    margin-top: 16px;
     max-width: 26ch;
   }
 
   .footer h3 {
-    font-family: var(--sans);
     font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.22em;
-    margin-bottom: 18px;
+    letter-spacing: 0.18em;
+    margin-bottom: 16px;
   }
 
   .footer li + li {
@@ -84,18 +135,15 @@ const year = new Date().getFullYear();
   }
 
   .footer a:hover {
-    color: var(--ink);
+    color: var(--wine);
   }
 
   .footer__bottom {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    margin-top: 64px;
-    padding-block: 22px 30px;
+    margin-top: 48px;
+    padding-block: 20px 28px;
     border-top: 1px solid var(--line);
     font-size: 11px;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
   }

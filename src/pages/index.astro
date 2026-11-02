@@ -3,603 +3,460 @@ import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import ProductCard from '../components/ProductCard.astro';
-import { bySlug, categories, inCategory } from '../data/products';
-import { SITE, img, url } from '../lib/site';
+import { bySlug } from '../data/products';
+import { results } from '../data/results';
+import { SITE, img, price, url } from '../lib/site';
 
-const bestsellers = [
-  'serum-sa-pet-zlatnih-ulja',
-  'aktivne-ampule',
-  'sprej-za-rast-kose',
-  'maska-protiv-mascenja-kose',
-  'ulje-za-kosu-25u1',
-  'maska-ritual-tretman',
-  'regenerator-za-kosu-3u1',
-].map((s) => bySlug(s)!);
+const pick = (...slugs: string[]) => slugs.map((s) => bySlug(s)!);
 
-const collections = categories.map((c) => ({ ...c, items: inCategory(c.id).slice(0, 4) }));
+const bestsellers = pick('serum-sa-pet-zlatnih-ulja', 'aktivne-ampule', 'sprej-za-rast-kose', 'ulje-za-kosu-25u1');
+const care = pick('sampon-za-kosu', 'balzam-za-kosu', 'maska-za-kosu', 'regenerator-za-kosu-3u1');
+const duo = bySlug('duo-za-rast-i-oporavak-kose')!;
 
-const follow = [
-  { image: 'hair/crna.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/C_Gxq5PNETL/' },
-  { image: 'instagram/reel-2.jpg', href: 'https://www.instagram.com/aurolakozmetika/reel/De7e7MkoDbX/' },
-  { image: 'hair/svijetla.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/C8rATR2Nv3M/' },
+const features = [
+  {
+    p: bySlug('serum-sa-pet-zlatnih-ulja')!,
+    title: 'Serum sa pet zlatnih ulja',
+    text: 'Naš najprodavaniji proizvod. Ricinus, maslina, čičak, avokado i laneno ulje hrane tjeme, ubrzavaju rast i progušćuju kosu.',
+    tone: 'pink',
+  },
+  {
+    p: bySlug('maska-protiv-mascenja-kose')!,
+    title: 'Maska protiv mašćenja',
+    text: 'Novo! Hamamelis, zelena i bijela glina, ruzmarin i mentol vraćaju balans masnom vlasištu – kosa duže ostaje svježa.',
+    tone: 'peach',
+  },
 ];
+
+const strip = results.slice(0, 5);
 ---
 
 <Layout>
   <!-- HERO -->
   <section class="hero">
-    <Image
-      class="hero__img"
-      src={img('hero-pouch.jpg')}
-      alt="Aurola maska za kosu u kremastoj teksturi"
-      widths={[640, 960, 1064]}
-      sizes="100vw"
-      loading="eager"
-      fetchpriority="high"
-    />
-    <div class="hero__text">
-      <h1>Prirodna<br />njega kose</h1>
-      <p>Za jaču, gušću i ljepšu kosu</p>
+    <div class="hero__inner">
+      <div class="hero__text">
+        <p class="kicker">Prirodna kozmetika za kosu</p>
+        <h1>Jača, gušća i ljepša kosa</h1>
+        <p class="hero__lead">Proizvodi na prirodnoj bazi koji pomažu da kosa brže raste i ne opada.</p>
+        <div class="hero__actions">
+          <a class="btn" href={url('/proizvodi')}>Pogledaj proizvode</a>
+          <a class="btn btn--outline" href={SITE.dm} target="_blank" rel="noopener">Naruči u DM</a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <span class="hero__ring" aria-hidden="true"></span>
+        <Image
+          src={img('cutouts/set-trio.png')}
+          alt="Aurola sprej za rast kose, aktivne ampule i serum sa pet zlatnih ulja"
+          widths={[480, 720, 960]}
+          sizes="(max-width: 860px) 90vw, 560px"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
     </div>
-    <a class="btn btn--solid hero__more" href={url('/proizvodi')}>Pogledaj proizvode</a>
   </section>
 
-  <!-- STRIP -->
-  <section class="strip" aria-label="Informacije">
-    <div class="strip__item"><span>Uvijek</span>Prirodna baza</div>
-    <div class="strip__item"><span>Narudžbe</span>Putem Instagram DM-a</div>
-    <div class="strip__item"><span>Dostava</span>Poštarina {SITE.shipping}</div>
+  <!-- BENEFITS -->
+  <section class="wrap perks" aria-label="Zašto Aurola">
+    <div><Icon name="leaf" size={24} /><span>Prirodna baza</span></div>
+    <div><Icon name="drop" size={24} /><span>Bez agresivnih sastojaka</span></div>
+    <div><Icon name="sparkle" size={24} /><span>Vidljivi rezultati</span></div>
+    <div><Icon name="truck" size={24} /><span>Poštarina {SITE.shipping}</span></div>
   </section>
 
-  <!-- MUST HAVE -->
-  <section class="section must">
-    <div class="must__intro">
-      <h2 class="title">Bestseleri</h2>
-      <p>Najomiljeniji proizvodi naših djevojaka</p>
-      <a class="more" href={url('/proizvodi')}>pogledaj sve</a>
-    </div>
-    <div class="must__rail">
-      <button class="must__arrow must__arrow--prev" type="button" aria-label="Prethodni proizvodi" data-prev>
-        <Icon name="arrow" size={18} />
-      </button>
-      <div class="must__track" data-track>
+  <!-- BESTSELERI -->
+  <section class="section">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="title">Bestseleri</h2>
+        <p>Najomiljeniji proizvodi naših djevojaka</p>
+      </div>
+      <div class="grid-4">
         {bestsellers.map((p) => <ProductCard product={p} />)}
       </div>
-      <button class="must__arrow must__arrow--next" type="button" aria-label="Sljedeći proizvodi" data-next>
-        <Icon name="arrow" size={18} />
-      </button>
     </div>
   </section>
 
-  <!-- BANNER -->
-  <section class="banner">
-    <div class="banner__media">
-      <Image src={img('hair/plava.jpg')} alt="Duga, sjajna plava kosa korisnice nakon Aurola njege" widths={[480, 685]} sizes="(max-width: 760px) 100vw, 50vw" />
-    </div>
-    <div class="banner__text reveal">
-      <h2 class="title">Njega kose<br />jednostavna kao nikad</h2>
-      <p>Serum i aktivne ampule – rutina u dva koraka, dovoljna za dva mjeseca njege.</p>
-      <a class="more" href={url('/proizvodi/duo-za-rast-i-oporavak-kose')}>pogledaj set</a>
-    </div>
-  </section>
-
-  <!-- COLLECTIONS -->
-  <section class="section collections">
-    <div class="collections__names" role="tablist" aria-label="Kolekcije">
-      {
-        collections.map((c, i) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${c.id}`}
-            aria-controls={`panel-${c.id}`}
-            aria-selected={i === 0 ? 'true' : 'false'}
-            tabindex={i === 0 ? 0 : -1}
-            data-tab
-          >
-            <span class="collections__name">{c.label}</span>
-            <span class="collections__sub">{inCategory(c.id).length} proizvoda</span>
-          </button>
-        ))
-      }
-    </div>
-    <div class="wrap">
-      {
-        collections.map((c, i) => (
-          <div class="collections__grid" role="tabpanel" id={`panel-${c.id}`} aria-labelledby={`tab-${c.id}`} hidden={i !== 0} data-panel>
-            {c.items.map((p) => (
-              <ProductCard product={p} />
-            ))}
-          </div>
-        ))
-      }
-      <p class="center collections__more"><a class="more" href={url('/proizvodi')}>cijeli asortiman</a></p>
-    </div>
-  </section>
-
-  <!-- SPLIT: SET -->
-  <section class="split split--greige">
-    <div class="wrap split__inner">
-      <div class="split__text reveal">
-        <h2 class="title">Rast i oporavak</h2>
-        <p class="split__sub">za kosu koja ne opada</p>
-        <p>
-          Serum sa pet zlatnih ulja i aktivne ampule s uljem amle, ricinusa i vitaminom B3 djeluju direktno na tjeme. Kosa brže
-          raste, manje opada i postaje gušća – prvi rezultati vidljivi su već nakon nekoliko sedmica.
-        </p>
-        <a class="more" href={url('/proizvodi#rast')}>pogledaj</a>
-      </div>
-      <div class="split__media reveal">
-        <Image src={img('hair/smeda.jpg')} alt="Duga, zdrava smeđa kosa korisnice nakon seta za rast" widths={[420, 670]} sizes="(max-width: 760px) 100vw, 480px" />
-      </div>
-    </div>
-  </section>
-
-  <!-- SPLIT: DJECA -->
-  <section class="split">
-    <div class="wrap split__inner split__inner--rev">
-      <div class="split__media reveal">
-        <Image src={img('products/set-za-princeze.jpg')} alt="Aurola set za djecu: šampon, balzam i regenerator" widths={[420, 640]} sizes="(max-width: 760px) 100vw, 480px" />
-      </div>
-      <div class="split__text reveal">
-        <h2 class="title">Za male princeze</h2>
-        <p class="split__sub">šampon, balzam i regenerator</p>
-        <p>
-          Nježne formule bez sapuna, s uljem makadamije, avokada, kokosa i badema, shea maslacem i aloe verom – i mirisom koji
-          djeca obožavaju.
-        </p>
-        <a class="more" href={url('/proizvodi#djeca')}>pogledaj</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOLLOW -->
-  <section class="follow">
-    <h2 class="title center">Prati nas <a href={SITE.instagram} target="_blank" rel="noopener">{SITE.handle}</a></h2>
-    <div class="follow__grid">
-      {
-        follow.map((f) => (
-          <a href={f.href} target="_blank" rel="noopener" aria-label="Otvori objavu na Instagramu">
-            <Image src={img(f.image)} alt="" widths={[360, 480, 640]} sizes="(max-width: 760px) 33vw, 480px" />
+  <!-- FEATURES -->
+  <section class="wrap features">
+    {
+      features.map((f, i) => (
+        <article class:list={['feature', { 'feature--rev': i % 2 }]}>
+          <a class:list={['feature__media', `feature__media--${f.tone}`]} href={url(`/proizvodi/${f.p.slug}`)} tabindex="-1" aria-hidden="true">
+            <Image src={img(f.p.image)} alt="" widths={[400, 600, 800]} sizes="(max-width: 760px) 90vw, 520px" />
           </a>
-        ))
-      }
+          <div class="feature__text reveal">
+            {f.p.badge && <p class="kicker">{f.p.badge}</p>}
+            <h2>{f.title}</h2>
+            <p>{f.text}</p>
+            <p class="feature__price">{price(f.p.price)}</p>
+            <a class="btn" href={url(`/proizvodi/${f.p.slug}`)}>Pogledaj</a>
+          </div>
+        </article>
+      ))
+    }
+  </section>
+
+  <!-- PROMO -->
+  <section class="promo">
+    <div class="wrap promo__inner">
+      <div class="promo__text reveal">
+        <p class="kicker">Najprodavaniji set</p>
+        <h2>Duo za rast<br />i oporavak kose</h2>
+        <p>Serum + aktivne ampule · dovoljno za 2 mjeseca njege</p>
+        <p class="promo__price">{price(duo.price)}</p>
+        <a class="btn btn--white" href={url(`/proizvodi/${duo.slug}`)}>Pogledaj set</a>
+      </div>
+      <div class="promo__visual">
+        <Image src={img(duo.image)} alt="Aurola aktivne ampule i serum sa pet zlatnih ulja" widths={[480, 720, 960]} sizes="(max-width: 760px) 90vw, 560px" />
+      </div>
+    </div>
+  </section>
+
+  <!-- NJEGA -->
+  <section class="section">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="title">Njega i sjaj</h2>
+        <p>Šampon, balzam, maske i leave-in njega</p>
+      </div>
+      <div class="grid-4">
+        {care.map((p) => <ProductCard product={p} />)}
+      </div>
+      <p class="center more-wrap"><a class="more" href={url('/proizvodi')}>Svi proizvodi</a></p>
+    </div>
+  </section>
+
+  <!-- DJECA -->
+  <section class="wrap">
+    <article class="feature feature--rev">
+      <a class="feature__media feature__media--pink" href={url('/proizvodi#djeca')} tabindex="-1" aria-hidden="true">
+        <Image src={img('cutouts/set-za-princeze.png')} alt="" widths={[400, 600]} sizes="(max-width: 760px) 90vw, 520px" />
+      </a>
+      <div class="feature__text reveal">
+        <p class="kicker">Set za kosu</p>
+        <h2>Za male princeze</h2>
+        <p>Šampon, balzam i regenerator za djecu – nježne formule bez sapuna i mirisa koji djeca obožavaju.</p>
+        <p class="feature__price">od {price(15)}</p>
+        <a class="btn" href={url('/proizvodi#djeca')}>Pogledaj</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- REZULTATI -->
+  <section class="section">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="title">Rezultati naših djevojaka</h2>
+        <p>Fotografije koje su nam poslale korisnice</p>
+      </div>
+      <div class="strip">
+        {
+          strip.map((r) => (
+            <a href={url('/rezultati')}>
+              <Image src={img(r.image)} alt={`Rezultat korisnice: ${r.label}`} widths={[240, 360]} sizes="(max-width: 760px) 45vw, 220px" />
+            </a>
+          ))
+        }
+      </div>
+      <p class="center more-wrap"><a class="more" href={url('/rezultati')}>Svi rezultati</a></p>
     </div>
   </section>
 </Layout>
 
-<script>
-  // karusel bestselera
-  const track = document.querySelector<HTMLElement>('[data-track]');
-  const step = () => (track?.querySelector('.card') as HTMLElement | null)?.offsetWidth ?? 300;
-  document.querySelector('[data-prev]')?.addEventListener('click', () => track?.scrollBy({ left: -step() - 24, behavior: 'smooth' }));
-  document.querySelector('[data-next]')?.addEventListener('click', () => track?.scrollBy({ left: step() + 24, behavior: 'smooth' }));
-
-  // kolekcije
-  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
-  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
-  const select = (i: number) => {
-    tabs.forEach((t, j) => {
-      t.setAttribute('aria-selected', String(i === j));
-      t.tabIndex = i === j ? 0 : -1;
-    });
-    panels.forEach((p, j) => (p.hidden = i !== j));
-  };
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => select(i));
-    t.addEventListener('keydown', (e) => {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      const next = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
-      select(next);
-      tabs[next].focus();
-    });
-  });
-</script>
-
 <style>
   /* HERO */
   .hero {
-    position: relative;
-    max-width: 1440px;
+    background: linear-gradient(120deg, var(--pink-2) 0%, var(--pink) 100%);
+  }
+
+  .hero__inner {
+    max-width: var(--wrap);
     margin-inline: auto;
-    height: clamp(460px, 76vh, 760px);
-    overflow: hidden;
-    background: var(--tile);
-  }
-
-  .hero__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 60% 40%;
-  }
-
-  .hero__text {
-    position: absolute;
-    top: clamp(32px, 6vw, 72px);
-    left: var(--gutter);
+    padding: clamp(48px, 7vw, 96px) var(--gutter);
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+    gap: clamp(24px, 4vw, 64px);
   }
 
   .hero h1 {
-    font-size: clamp(34px, 4.2vw, 58px);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: 0.06em;
+    margin-top: 14px;
+    font-size: clamp(38px, 5vw, 66px);
+    line-height: 1.02;
+    max-width: 11ch;
   }
 
-  .hero__text p {
-    margin-top: 14px;
+  .hero__lead {
+    margin-top: 18px;
+    font-size: 16px;
+    max-width: 36ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .hero__visual {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+
+  .hero__ring {
+    position: absolute;
+    width: 78%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 18px rgba(255, 255, 255, 0.18);
+  }
+
+  .hero__visual img {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    filter: drop-shadow(0 24px 24px rgba(125, 44, 59, 0.18));
+  }
+
+  /* PERKS */
+  .perks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding-block: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .perks div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--wine);
+    text-align: center;
+  }
+
+  .perks span {
     font-size: 11px;
-    letter-spacing: 0.24em;
+    font-weight: 500;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  /* HEAD + GRID */
+  .head {
+    text-align: center;
+    margin-bottom: clamp(28px, 4vw, 44px);
+  }
+
+  .head p {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+  }
+
+  .more-wrap {
+    margin-top: 36px;
+  }
+
+  /* FEATURES */
+  .features {
+    display: grid;
+    gap: var(--gap);
+  }
+
+  .feature {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .feature--rev .feature__media {
+    order: 2;
+  }
+
+  .feature__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 5 / 4;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .feature__media--pink {
+    background: var(--pink);
+  }
+
+  .feature__media--peach {
+    background: var(--peach);
+  }
+
+  .feature__media img {
+    position: absolute;
+    inset: 12%;
+    width: 76%;
+    height: 76%;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 20px rgba(125, 44, 59, 0.16));
+    transition: transform 0.8s var(--ease);
+  }
+
+  .feature__media:hover img {
+    transform: scale(1.04);
+  }
+
+  .feature__text {
+    padding: clamp(16px, 4vw, 64px);
+  }
+
+  .feature__text h2 {
+    margin-top: 8px;
+    font-size: clamp(24px, 2.8vw, 36px);
+  }
+
+  .feature__text p:not(.kicker):not(.feature__price) {
+    margin-top: 14px;
+    max-width: 40ch;
+  }
+
+  .feature__price {
+    margin-block: 18px 20px;
+    font-size: 20px;
+    font-weight: 600;
     color: var(--ink);
   }
 
-  .hero__more {
-    position: absolute;
-    right: var(--gutter);
-    bottom: clamp(28px, 4vw, 48px);
+  /* PROMO */
+  .promo {
+    margin-top: var(--space);
+    background: var(--wine);
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .promo__inner {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+    gap: clamp(24px, 4vw, 64px);
+    padding-block: clamp(48px, 6vw, 80px);
+  }
+
+  .promo .kicker {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .promo h2 {
+    margin-top: 10px;
+    color: var(--white);
+    font-size: clamp(30px, 4vw, 52px);
+    line-height: 1.05;
+  }
+
+  .promo__text > p:not(.kicker):not(.promo__price) {
+    margin-top: 16px;
+  }
+
+  .promo__price {
+    margin-block: 18px 24px;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .promo__visual img {
+    width: 100%;
+    max-width: 580px;
+    margin-inline: auto;
+    filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.3));
   }
 
   /* STRIP */
   .strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 1440px;
-    margin-inline: auto;
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
   }
 
-  .strip__item {
-    padding: 22px 12px;
-    text-align: center;
-    font-family: var(--serif);
-    font-size: 15px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
-
-  .strip__item span {
-    display: block;
-    font-family: var(--sans);
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    color: var(--muted);
-    margin-bottom: 2px;
-  }
-
-  /* MUST HAVE */
-  .must {
-    display: grid;
-    grid-template-columns: minmax(220px, 300px) 1fr;
-    align-items: center;
-    gap: clamp(24px, 4vw, 56px);
-    padding-left: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
-    overflow: hidden;
-  }
-
-  .must__intro p {
-    margin-block: 8px 18px;
-    font-size: 13px;
-  }
-
-  .must__rail {
-    position: relative;
-    min-width: 0;
-  }
-
-  .must__track {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: clamp(200px, 22vw, 280px);
-    gap: 24px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding-right: var(--gutter);
-  }
-
-  .must__track::-webkit-scrollbar {
-    display: none;
-  }
-
-  .must__track > :global(*) {
-    scroll-snap-align: start;
-  }
-
-  .must__arrow {
-    position: absolute;
-    top: 40%;
-    z-index: 2;
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 0;
-    background: rgba(253, 249, 248, 0.92);
-    border-radius: 50%;
-    color: var(--accent);
-    cursor: pointer;
-  }
-
-  .must__arrow--prev {
-    left: -20px;
-  }
-
-  .must__arrow--prev :global(svg) {
-    transform: rotate(180deg);
-  }
-
-  .must__arrow--next {
-    right: calc(var(--gutter) - 20px);
-  }
-
-  /* BANNER */
-  .banner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    max-width: 1440px;
-    margin-inline: auto;
-    background: var(--greige);
-    min-height: clamp(360px, 40vw, 560px);
-  }
-
-  .banner__media {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .banner__media img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 30%;
-  }
-
-  .banner__text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    text-align: right;
-    padding: clamp(36px, 6vw, 96px);
-  }
-
-  .banner__text p {
-    margin-block: 14px 20px;
-    max-width: 34ch;
-    font-size: 13px;
-  }
-
-  /* COLLECTIONS */
-  .collections__names {
-    display: flex;
-    justify-content: center;
-    gap: clamp(20px, 4vw, 56px);
-    padding-inline: var(--gutter);
-    margin-bottom: clamp(36px, 5vw, 56px);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .collections__names::-webkit-scrollbar {
-    display: none;
-  }
-
-  .collections__names button {
-    flex: none;
-    display: grid;
-    gap: 2px;
-    background: none;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    color: var(--accent-soft);
-    transition: color 0.3s;
-  }
-
-  .collections__names button:hover,
-  .collections__names button[aria-selected='true'] {
-    color: var(--accent);
-  }
-
-  .collections__name {
-    font-family: var(--serif);
-    font-size: clamp(20px, 2.4vw, 30px);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .collections__sub {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--muted);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .collections__names button[aria-selected='true'] .collections__sub {
-    opacity: 1;
-  }
-
-  .collections__grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(0, calc((100% - 3 * clamp(16px, 2.5vw, 32px)) / 4));
-    justify-content: center;
-    gap: clamp(16px, 2.5vw, 32px);
-  }
-
-  .collections__more {
-    margin-top: 44px;
-  }
-
-  /* SPLIT */
-  .split {
-    padding-block: var(--space);
-  }
-
-  .split--greige {
-    background: var(--greige);
-  }
-
-  .split__inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: clamp(32px, 7vw, 112px);
-  }
-
-  .split__text {
-    max-width: 400px;
-    justify-self: end;
-    text-align: right;
-  }
-
-  .split__inner--rev .split__text {
-    justify-self: start;
-    text-align: left;
-  }
-
-  .split__sub {
-    margin-top: 6px;
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 19px;
-    color: var(--ink-2);
-  }
-
-  .split__text p:not(.split__sub) {
-    margin-block: 20px 22px;
-    font-size: 13px;
-  }
-
-  .split__media img {
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-  }
-
-  /* FOLLOW */
-  .follow {
-    padding-top: var(--space);
-  }
-
-  .follow h2 a {
-    transition: color 0.2s;
-  }
-
-  .follow h2 a:hover {
-    color: var(--accent);
-  }
-
-  .follow__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: clamp(28px, 4vw, 44px);
-  }
-
-  .follow__grid a {
+  .strip a {
     position: relative;
     display: block;
     aspect-ratio: 1;
     overflow: hidden;
+    border-radius: var(--radius);
   }
 
-  .follow__grid img {
+  .strip img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: opacity 0.4s;
+    transition: transform 0.8s var(--ease);
   }
 
-  .follow__grid a:hover img {
-    opacity: 0.85;
+  .strip a:hover img {
+    transform: scale(1.05);
   }
 
   /* RESPONSIVE */
   @media (max-width: 960px) {
-    .collections__names {
-      justify-content: flex-start;
-    }
-    .collections__grid {
+    .grid-4 {
       grid-template-columns: repeat(2, 1fr);
-      grid-auto-flow: row;
+      row-gap: 32px;
     }
   }
 
   @media (max-width: 760px) {
-    .hero {
-      height: auto;
-      display: flex;
-      flex-direction: column;
+    .hero__inner,
+    .promo__inner,
+    .feature {
+      grid-template-columns: 1fr;
     }
-    .hero__img {
-      aspect-ratio: 4 / 3;
-      height: auto;
+    .hero__inner {
+      text-align: center;
     }
-    .hero__text {
-      position: static;
-      padding: 32px var(--gutter) 8px;
+    .hero h1,
+    .hero__lead {
+      margin-inline: auto;
     }
-    .hero__more {
-      position: static;
-      align-self: flex-start;
-      margin: 8px var(--gutter) 32px;
+    .hero__actions {
+      justify-content: center;
+    }
+    .feature--rev .feature__media {
+      order: 0;
+    }
+    .feature__text {
+      padding: 8px 4px 24px;
+      text-align: center;
+    }
+    .feature__text p:not(.kicker):not(.feature__price) {
+      margin-inline: auto;
+    }
+    .promo__inner {
+      text-align: center;
+    }
+    .perks {
+      grid-template-columns: repeat(2, 1fr);
+      row-gap: 20px;
     }
     .strip {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, 1fr);
     }
-    .strip__item {
-      padding: 14px;
-    }
-    .strip__item + .strip__item {
-      border-top: 1px solid var(--line);
-    }
-    .must {
-      grid-template-columns: 1fr;
-      padding-left: 0;
-    }
-    .must__intro {
-      padding-inline: var(--gutter);
-    }
-    .must__track {
-      grid-auto-columns: 62vw;
-      gap: 14px;
-      padding-left: var(--gutter);
-      scroll-padding-left: var(--gutter);
-    }
-    .must__arrow {
+    .strip a:nth-child(n + 4) {
       display: none;
-    }
-    .banner,
-    .split__inner {
-      grid-template-columns: 1fr;
-    }
-    .banner__media {
-      aspect-ratio: 4 / 3;
-    }
-    .banner__text,
-    .split__text,
-    .split__inner--rev .split__text {
-      align-items: flex-start;
-      text-align: left;
-      justify-self: start;
-    }
-    .split__inner--rev .split__media,
-    .split__media {
-      order: -1;
-    }
-    .follow__grid {
-      gap: 4px;
     }
   }
 </style>

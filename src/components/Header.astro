@@ -16,6 +16,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
 ---
 
+<p class="announce">Narudžbe putem Instagram DM-a <span aria-hidden="true">·</span> Poštarina {SITE.shipping}</p>
+
 <header class="header" data-header>
   <div class="header__bar">
     <button class="header__toggle" type="button" aria-label="Otvori meni" aria-expanded="false" aria-controls="site-nav" data-toggle>
@@ -61,11 +63,26 @@ const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
 </script>
 
 <style>
+  .announce {
+    background: var(--pink);
+    color: var(--wine);
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 9px var(--gutter);
+  }
+
+  .announce span {
+    margin-inline: 8px;
+  }
+
   .header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(253, 249, 248, 0.94);
+    background: rgba(255, 251, 250, 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s;
@@ -112,10 +129,10 @@ const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
 
   .header__nav a {
     font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.22em;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--ink);
+    color: var(--wine);
     padding-block: 6px;
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s, color 0.3s;
@@ -132,7 +149,7 @@ const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
     top: 50%;
     transform: translateY(-50%);
     display: inline-flex;
-    color: var(--ink);
+    color: var(--wine);
   }
 
   .header__toggle {
@@ -187,9 +204,9 @@ const current = Astro.url.pathname.replace(base, '').replace(/\/$/, '') || '/';
     }
     .header__nav a {
       display: block;
-      font-family: var(--serif);
-      font-size: 26px;
-      letter-spacing: 0.06em;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
       padding: 14px 0;
       border-bottom: 1px solid var(--line);
     }

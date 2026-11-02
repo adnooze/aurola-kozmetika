@@ -28,7 +28,7 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
 
   <section class="wrap product">
     <div class="product__gallery" data-gallery>
-      <div class="product__main">
+      <div class:list={['product__main', { 'product__main--cutout': gallery[0].endsWith('.png') }]} data-mainbox>
         <Image
           src={img(gallery[0])}
           alt={p.name}
@@ -45,7 +45,7 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
           <div class="product__thumbs">
             {gallery.map((g, i) => (
               <button type="button" aria-label={`Slika ${i + 1}`} aria-pressed={i === 0 ? 'true' : 'false'} data-thumb>
-                <Image src={img(g)} alt="" widths={[160, 240]} sizes="96px" />
+                <Image src={img(g)} alt="" widths={[160, 240]} sizes="96px" class:list={[{ cutout: g.endsWith('.png') }]} />
               </button>
             ))}
           </div>
@@ -125,6 +125,7 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
         main.src = t.src;
         main.sizes = '(max-width: 860px) 100vw, 600px';
         main.style.objectPosition = '50% 50%';
+        g.querySelector('[data-mainbox]')?.classList.toggle('product__main--cutout', t.classList.contains('cutout'));
         g.querySelectorAll('[data-thumb]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       });
     });
@@ -168,6 +169,16 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
     object-fit: cover;
   }
 
+  .product__main--cutout {
+    background: var(--pink);
+  }
+
+  .product__main--cutout img {
+    object-fit: contain;
+    padding: 14%;
+    filter: drop-shadow(0 20px 20px rgba(125, 44, 59, 0.16));
+  }
+
   .product__badge {
     position: absolute;
     top: 16px;
@@ -205,6 +216,12 @@ const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !=
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+  }
+
+  .product__thumbs img.cutout {
+    object-fit: contain;
+    padding: 10%;
+    background: var(--pink);
   }
 
   .product__info h1 {
