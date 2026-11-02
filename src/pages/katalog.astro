@@ -1,0 +1,90 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, img } from '../lib/site';
+
+const pages = [
+  { image: 'instagram/katalog-1.jpg', title: 'Naslovna' },
+  { image: 'instagram/katalog-2.jpg', title: 'Sprej za rast, aktivne ampule, serum sa pet zlatnih ulja' },
+  { image: 'instagram/katalog-3.jpg', title: 'Šampon, maska i sprej protiv mašćenja' },
+  { image: 'instagram/katalog-4.jpg', title: 'Ulje 25u1, maska za kosu, regenerator 3u1' },
+  { image: 'instagram/katalog-5.jpg', title: 'Krema, balzam i gel za kosu' },
+  { image: 'instagram/katalog-6.jpg', title: 'Set za kosu za male princeze' },
+];
+---
+
+<Layout title="Katalog proizvoda" description="Aurola katalog proizvoda 2026 – svi proizvodi, cijene i sastojci na jednom mjestu.">
+  <PageHero
+    eyebrow="Katalog 2026"
+    title="Aurola <em>katalog proizvoda</em>"
+    lead="Malo smo vam olakšali pregled proizvoda – u katalogu ćete pronaći informacije o svim proizvodima, cijenama i njihovim sastojcima."
+  >
+    <a class="btn katalog__cta" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Za narudžbe piši u DM</a>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap pages">
+      {
+        pages.map((p, i) => {
+          const image = img(p.image);
+          return (
+            <a class="page reveal" href={image.src} target="_blank" rel="noopener">
+              <Image src={image} alt={`Katalog, strana ${i + 1}: ${p.title}`} widths={[480, 720, 1080]} sizes="(max-width: 860px) 100vw, 580px" />
+              <span>
+                <b>{String(i + 1).padStart(2, '0')}</b> {p.title}
+              </span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .katalog__cta {
+    margin-top: 28px;
+  }
+
+  .pages {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(20px, 3vw, 36px);
+  }
+
+  .page {
+    display: block;
+  }
+
+  .page img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 24px 50px -32px rgba(94, 40, 52, 0.5);
+    transition: transform 0.5s var(--ease);
+  }
+
+  .page:hover img {
+    transform: translateY(-4px);
+  }
+
+  .page span {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .page b {
+    font-family: var(--serif);
+    color: var(--rose-deep);
+  }
+
+  @media (max-width: 860px) {
+    .pages {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

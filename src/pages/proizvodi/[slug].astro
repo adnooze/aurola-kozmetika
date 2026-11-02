@@ -1,0 +1,330 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, categoryLabel, type Product } from '../../data/products';
+import { SITE, img, price, url } from '../../lib/site';
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+interface Props {
+  product: Product;
+}
+
+const { product: p } = Astro.props;
+const gallery = [...new Set([p.image, ...(p.gallery ?? [])])];
+const related = products.filter((x) => x.category === p.category && x.slug !== p.slug).slice(0, 4);
+const more = related.length < 4 ? products.filter((x) => x.featured && x.slug !== p.slug && !related.includes(x)).slice(0, 4 - related.length) : [];
+---
+
+<Layout title={p.name} description={`${p.name} – ${p.short} Cijena ${price(p.price)}.`}>
+  <div class="wrap crumbs">
+    <a href={url('/')}>Početna</a> / <a href={url('/proizvodi')}>Proizvodi</a> /
+    <a href={url(`/proizvodi#${p.category}`)}>{categoryLabel(p.category)}</a>
+  </div>
+
+  <section class="wrap product">
+    <div class="product__gallery" data-gallery>
+      <div class="product__main">
+        <Image
+          src={img(gallery[0])}
+          alt={p.name}
+          widths={[480, 720, 960]}
+          sizes="(max-width: 860px) 100vw, 600px"
+          loading="eager"
+          data-main
+          style={p.focus ? `object-position:${p.focus}` : undefined}
+        />
+        {p.badge && <span class="product__badge">{p.badge}</span>}
+      </div>
+      {
+        gallery.length > 1 && (
+          <div class="product__thumbs">
+            {gallery.map((g, i) => (
+              <button type="button" aria-label={`Slika ${i + 1}`} aria-pressed={i === 0 ? 'true' : 'false'} data-thumb>
+                <Image src={img(g)} alt="" widths={[160, 240]} sizes="96px" />
+              </button>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <div class="product__info">
+      <p class="eyebrow">{categoryLabel(p.category)}</p>
+      <h1>{p.name}</h1>
+      <p class="product__type">{p.type}{p.size && ` · ${p.size}`}</p>
+      <p class="product__price">{price(p.price)}</p>
+      <p class="product__desc">{p.description}</p>
+
+      <ul class="product__benefits">
+        {p.benefits.map((b) => <li><Icon name="check" size={18} /> {b}</li>)}
+      </ul>
+
+      <div class="product__order">
+        <a class="btn" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Naruči putem Instagram DM-a</a>
+        <p>Pošalji nam naziv proizvoda u poruci · Poštarina {SITE.shipping}</p>
+      </div>
+
+      {
+        p.usage && (
+          <details class="acc" open>
+            <summary>Način upotrebe</summary>
+            <p>{p.usage}</p>
+          </details>
+        )
+      }
+      {
+        p.ingredients && (
+          <details class="acc">
+            <summary>Sastav</summary>
+            <p>{p.ingredients.join(' · ')}</p>
+          </details>
+        )
+      }
+      <details class="acc">
+        <summary>Dostava i narudžba</summary>
+        <p>
+          Narudžbe primamo putem Instagram poruka ({SITE.handle}). Pošalji nam ime proizvoda, svoje ime i prezime, adresu i broj
+          telefona – javit ćemo ti se s potvrdom. Poštarina iznosi {SITE.shipping}.
+        </p>
+      </details>
+    </div>
+  </section>
+
+  {
+    related.length + more.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Možda ti se svidi</h2>
+            <a class="link-underline" href={url('/proizvodi')}>Svi proizvodi</a>
+          </div>
+          <div class="grid">
+            {[...related, ...more].map((r) => (
+              <ProductCard product={r} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
+    const main = g.querySelector<HTMLImageElement>('[data-main]');
+    g.querySelectorAll<HTMLButtonElement>('[data-thumb]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const t = btn.querySelector('img');
+        if (!main || !t) return;
+        main.srcset = t.srcset;
+        main.src = t.src;
+        main.sizes = '(max-width: 860px) 100vw, 600px';
+        main.style.objectPosition = '50% 50%';
+        g.querySelectorAll('[data-thumb]').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      });
+    });
+  });
+</script>
+
+<style>
+  .crumbs {
+    padding-block: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .crumbs a:hover {
+    color: var(--rose-deep);
+  }
+
+  .product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+    padding-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .product__gallery {
+    position: sticky;
+    top: 96px;
+  }
+
+  .product__main {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .product__main img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .product__badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--rose-deep);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 6px;
+  }
+
+  .product__thumbs {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .product__thumbs button {
+    width: 84px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+  }
+
+  .product__thumbs button[aria-pressed='true'] {
+    border-color: var(--rose);
+  }
+
+  .product__thumbs img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .product__info h1 {
+    font-size: clamp(36px, 4.4vw, 56px);
+    margin-top: 10px;
+  }
+
+  .product__type {
+    margin-top: 8px;
+    color: var(--muted);
+  }
+
+  .product__price {
+    margin-top: 18px;
+    font-family: var(--serif);
+    font-size: 30px;
+  }
+
+  .product__desc {
+    margin-top: 18px;
+    color: var(--ink-2);
+    max-width: 58ch;
+  }
+
+  .product__benefits {
+    margin-top: 22px;
+    display: grid;
+    gap: 10px;
+  }
+
+  .product__benefits li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .product__benefits :global(svg) {
+    flex: none;
+    margin-top: 4px;
+    color: var(--rose-deep);
+  }
+
+  .product__order {
+    margin-block: 32px;
+    padding: 24px;
+    background: var(--sand);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+
+  .product__order p {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .acc {
+    border-top: 1px solid var(--line);
+  }
+
+  .acc:last-of-type {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .acc summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .acc summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .acc summary::after {
+    content: '+';
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .acc[open] summary::after {
+    content: '–';
+  }
+
+  .acc p {
+    padding-bottom: 18px;
+    color: var(--ink-2);
+    font-size: 15px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+  }
+
+  @media (max-width: 860px) {
+    .product {
+      grid-template-columns: 1fr;
+    }
+    .product__gallery {
+      position: static;
+    }
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product__order .btn {
+      width: 100%;
+      padding-inline: 14px;
+      letter-spacing: 0.08em;
+    }
+  }
+</style>

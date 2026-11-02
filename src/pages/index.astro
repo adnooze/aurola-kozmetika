@@ -1,0 +1,892 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { bySlug, inCategory, products } from '../data/products';
+import { results, reels } from '../data/results';
+import { SITE, img, price, url } from '../lib/site';
+
+const pick = (...slugs: string[]) => slugs.map((s) => bySlug(s)!);
+
+const tabs = [
+  {
+    id: 'bestseleri',
+    label: 'Bestseleri',
+    items: pick('serum-sa-pet-zlatnih-ulja', 'aktivne-ampule', 'sprej-za-rast-kose', 'maska-protiv-mascenja-kose'),
+  },
+  { id: 'njega', label: 'Njega i sjaj', items: pick('ulje-za-kosu-25u1', 'maska-za-kosu', 'balzam-za-kosu', 'regenerator-za-kosu-3u1') },
+  { id: 'setovi', label: 'Setovi', items: [...inCategory('setovi'), ...pick('maska-ritual-tretman', 'sampon-za-kosu')] },
+  { id: 'djeca', label: 'Za djecu', items: [...inCategory('djeca'), bySlug('gel-za-zavrsnu-obradu-kose')!] },
+];
+
+const duo = bySlug('duo-za-rast-i-oporavak-kose')!;
+const ritual = bySlug('maska-ritual-tretman')!;
+const detox = bySlug('maska-protiv-mascenja-kose')!;
+const kids = inCategory('djeca');
+const strip = results.slice(0, 6);
+
+const feed = [
+  { image: 'instagram/katalog-1.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/DbGXII9CKjz/' },
+  { image: reels[0].image, href: 'https://www.instagram.com/aurolakozmetika/reel/DewxDTLIwIG/' },
+  { image: 'instagram/maska-detox-2.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/DfH_brKCP-L/' },
+  { image: 'instagram/rezultat-rast.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/DeufAjJoIne/' },
+  { image: reels[2].image, href: 'https://www.instagram.com/aurolakozmetika/reel/DfC9FS9IhQt/' },
+  { image: 'instagram/maska-ritual-1.jpg', href: 'https://www.instagram.com/aurolakozmetika/p/DfC2sM4iFLK/' },
+];
+---
+
+<Layout>
+  <!-- HERO -->
+  <section class="wrap hero-wrap">
+    <div class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Prirodna kozmetika za kosu</p>
+        <h1>Prirodna njega<br /><em>za kosu bez mane</em></h1>
+        <p class="hero__lead">
+          Proizvodi na prirodnoj bazi koji pomažu ženama da imaju jaču, gušću i ljepšu kosu koja brže raste i ne opada.
+        </p>
+        <div class="hero__actions">
+          <a class="btn" href={url('/proizvodi')}>Pogledaj proizvode</a>
+          <a class="btn btn--ghost" href={SITE.dm} target="_blank" rel="noopener">Naruči u DM</a>
+        </div>
+      </div>
+      <div class="hero__media">
+        <Image
+          src={img('hero-pouch.jpg')}
+          alt="Aurola maska za kosu u kremastoj teksturi"
+          widths={[640, 900, 1064]}
+          sizes="(max-width: 860px) 100vw, 680px"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <p class="hero__note"><strong>{SITE.followers}</strong> pratiteljica na Instagramu</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="wrap trust" aria-label="Zašto Aurola">
+    <div class="trust__item"><Icon name="leaf" size={22} /><h3>Prirodna baza</h3><p>Biljna ulja, hidrolati i ekstrakti</p></div>
+    <div class="trust__item"><Icon name="drop" size={22} /><h3>Bez agresivnih sastojaka</h3><p>Nježno prema vlasištu</p></div>
+    <div class="trust__item"><Icon name="sparkle" size={22} /><h3>Vidljivi rezultati</h3><p>Već nakon nekoliko sedmica</p></div>
+    <div class="trust__item"><Icon name="truck" size={22} /><h3>Dostava na adresu</h3><p>Poštarina {SITE.shipping}</p></div>
+  </section>
+
+  <!-- PRODUCTS / TABS -->
+  <section class="section shop">
+    <div class="wrap">
+      <h2 class="statement reveal">Njeguj kosu, voli sebe –<br /><em>vrati joj prirodan sjaj.</em></h2>
+
+      <div class="tabs" role="tablist" aria-label="Kategorije proizvoda">
+        {
+          tabs.map((t, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-${t.id}`}
+              aria-controls={`panel-${t.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-tab
+            >
+              {t.label}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        tabs.map((t, i) => (
+          <div class="grid-4" role="tabpanel" id={`panel-${t.id}`} aria-labelledby={`tab-${t.id}`} hidden={i !== 0} data-panel>
+            {t.items.map((p) => (
+              <ProductCard product={p} />
+            ))}
+          </div>
+        ))
+      }
+
+      <p class="center shop__more"><a class="link-underline" href={url('/proizvodi')}>Pogledaj svih {products.length} proizvoda</a></p>
+    </div>
+  </section>
+
+  <!-- DUO BANNER -->
+  <section class="wrap">
+    <div class="banner reveal">
+      <div class="banner__copy">
+        <p class="eyebrow">Najprodavaniji set</p>
+        <h2>Duo za rast<br /><em>i oporavak kose</em></h2>
+        <ul>
+          <li><Icon name="check" size={18} /> Ubrzava rast i smanjuje opadanje</li>
+          <li><Icon name="check" size={18} /> Djeluje direktno na tjeme i korijen</li>
+          <li><Icon name="check" size={18} /> Jedan set traje čak 2 mjeseca</li>
+        </ul>
+        <div class="banner__buy">
+          <span class="banner__price">{price(duo.price)}</span>
+          <a class="btn" href={url(`/proizvodi/${duo.slug}`)}>Pogledaj set</a>
+        </div>
+      </div>
+      <div class="banner__media">
+        <Image src={img(duo.image)} alt="Aurola serum sa pet zlatnih ulja i aktivne ampule" widths={[480, 720, 960]} sizes="(max-width: 860px) 100vw, 560px" />
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY / BENTO -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head section-head--center">
+        <h2>Zašto tvoja kosa<br /><em>zaslužuje najbolje</em></h2>
+      </div>
+      <div class="bento">
+        <div class="bento__big reveal">
+          <Image src={img('products/sprej-za-rast.jpg')} alt="Aurola sprej za rast kose" widths={[480, 720]} sizes="(max-width: 860px) 100vw, 620px" />
+          <div class="bento__glass">
+            <h3>Provjerena <em>učinkovitost</em></h3>
+            <p>Anagain™ i RootBioTec™ HW – klinički ispitani sastojci koji aktiviraju uspavane folikule i produžavaju fazu rasta.</p>
+          </div>
+        </div>
+        <div class="bento__card reveal">
+          <div>
+            <h3>Snaga <em>biljnih ulja</em></h3>
+            <p>Ricinus, amla, avokado, makadamija, jojoba, argan – i još dvadesetak ulja u našem ulju 25u1.</p>
+            <a class="link-underline" href={url('/proizvodi/ulje-za-kosu-25u1')}>Ulje za kosu 25u1</a>
+          </div>
+          <Image src={img('products/ulje-25u1.jpg')} alt="Aurola ulje za kosu 25u1" widths={[300, 450]} sizes="(max-width: 860px) 40vw, 220px" />
+        </div>
+        <div class="bento__card bento__card--dark reveal">
+          <div>
+            <h3>Nježno <em>za svaki dan</em></h3>
+            <p>Formule bez sulfata i agresivnih sastojaka, idealne i za farbanu, suhu i kosu tretiranu toplotom.</p>
+            <a class="link-underline" href={url('/proizvodi/balzam-za-kosu')}>Balzam za kosu</a>
+          </div>
+          <Image src={img('products/balzam-za-kosu.jpg')} alt="Aurola balzam za kosu" widths={[300, 450]} sizes="(max-width: 860px) 40vw, 220px" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL + RESULTS -->
+  <section class="section results">
+    <div class="wrap">
+      <figure class="quote reveal">
+        <blockquote>
+          „Kosa je znatno narasla, dosta se oporavila, <em>zdravija je i ljepša.</em> Malo je reći da sam oduševljena.“
+        </blockquote>
+        <figcaption>Korisnica seta za rast · 6.11. → 18.1.</figcaption>
+      </figure>
+
+      <div class="strip">
+        {
+          strip.map((r) => (
+            <a class="strip__item" href={url('/rezultati')}>
+              <Image src={img(r.image)} alt={`Rezultat korisnice: ${r.label}`} widths={[240, 360, 480]} sizes="(max-width: 640px) 50vw, (max-width: 1080px) 33vw, 200px" />
+              <span>{r.label}</span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="center results__more"><a class="link-underline" href={url('/rezultati')}>Svi rezultati naših djevojaka</a></p>
+    </div>
+  </section>
+
+  <!-- NOVO -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Novo u <em>Aurola</em> njezi</h2>
+        <a class="link-underline" href={url('/proizvodi')}>Svi proizvodi</a>
+      </div>
+      <div class="novo">
+        {
+          [
+            { p: ritual, image: 'instagram/maska-ritual-1.jpg', note: '2 maske po 20 ml + kapica za kosu' },
+            { p: detox, image: 'instagram/maska-detox-2.jpg', note: 'Hamamelis, glina, ruzmarin, mentol i kopriva' },
+          ].map(({ p, image, note }) => (
+            <a class="novo__card reveal" href={url(`/proizvodi/${p.slug}`)}>
+              <div class="novo__media">
+                <Image src={img(image)} alt={p.name} widths={[400, 600]} sizes="(max-width: 640px) 100vw, 300px" />
+              </div>
+              <div class="novo__body">
+                <span class="eyebrow">Novo</span>
+                <h3>{p.name}</h3>
+                <p>{p.short}</p>
+                <p class="novo__note">{note}</p>
+                <p class="novo__price">{price(p.price)}</p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- KIDS -->
+  <section class="section kids">
+    <div class="wrap kids__grid">
+      <div class="kids__media reveal">
+        <Image src={img('products/set-za-princeze.jpg')} alt="Aurola set za djecu: šampon, balzam i regenerator" widths={[400, 600]} sizes="(max-width: 860px) 100vw, 480px" />
+      </div>
+      <div class="kids__copy reveal">
+        <p class="eyebrow">Set za kosu</p>
+        <h2><em>za male princeze</em></h2>
+        <p>
+          Prirodni šampon, balzam i regenerator nježnog, gotovo čarobnog mirisa. Formula bez sapuna, s uljem makadamije, avokada,
+          kokosa, jojobe i badema, shea maslacem i aloe verom – da dječja kosa bude mekana i zaštićena od isušivanja.
+        </p>
+        <ul class="kids__list">
+          {
+            kids.map((k) => (
+              <li>
+                <a href={url(`/proizvodi/${k.slug}`)}>
+                  <span>{k.name}</span>
+                  <span>{price(k.price)}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn" href={url('/proizvodi#djeca')}>Pogledaj dječju liniju</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section class="insta">
+    <div class="wrap center">
+      <h2>Prati nas na <em>Instagramu</em></h2>
+      <a class="link-underline" href={SITE.instagram} target="_blank" rel="noopener">{SITE.handle}</a>
+    </div>
+    <div class="insta__feed">
+      {
+        feed.map((f) => (
+          <a href={f.href} target="_blank" rel="noopener" aria-label="Otvori objavu na Instagramu">
+            <Image src={img(f.image)} alt="" widths={[240, 360, 480]} sizes="(max-width: 640px) 33vw, 17vw" />
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+  const panels = [...document.querySelectorAll<HTMLElement>('[data-panel]')];
+  const select = (i: number) => {
+    tabs.forEach((t, j) => {
+      t.setAttribute('aria-selected', String(i === j));
+      t.tabIndex = i === j ? 0 : -1;
+    });
+    panels.forEach((p, j) => (p.hidden = i !== j));
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(i));
+    t.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const next = (i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+      select(next);
+      tabs[next].focus();
+    });
+  });
+</script>
+
+<style>
+  /* HERO */
+  .hero-wrap {
+    padding-top: 8px;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: clamp(520px, 62vh, 640px);
+    background: var(--sand);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .hero__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(36px, 5vw, 72px);
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 4.6vw, 68px);
+    margin-top: 18px;
+    line-height: 1.04;
+  }
+
+  .hero h1 em {
+    color: var(--rose-deep);
+  }
+
+  .hero__lead {
+    margin-top: 24px;
+    font-size: 17px;
+    color: var(--ink-2);
+    max-width: 40ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 36px;
+  }
+
+  .hero__media {
+    position: relative;
+    min-height: 320px;
+  }
+
+  .hero__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__note {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  .hero__note strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* TRUST */
+  .trust {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+    margin-top: var(--gap);
+  }
+
+  .trust__item {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 26px 20px;
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    color: var(--rose-deep);
+  }
+
+  .trust__item h3 {
+    margin-top: 6px;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .trust__item p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* SHOP */
+  .statement {
+    text-align: center;
+    font-size: clamp(30px, 3.8vw, 50px);
+    line-height: 1.15;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-block: clamp(28px, 4vw, 44px);
+  }
+
+  .tabs button {
+    font: inherit;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .tabs button:hover {
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .tabs button[aria-selected='true'] {
+    background: var(--brown);
+    color: var(--on-dark);
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+  }
+
+  .shop__more {
+    margin-top: 40px;
+  }
+
+  /* BANNER */
+  .banner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--blush);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .banner__copy {
+    padding: clamp(32px, 5vw, 72px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .banner h2 {
+    font-size: clamp(34px, 4.2vw, 56px);
+    margin-top: 14px;
+  }
+
+  .banner ul {
+    margin-top: 28px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .banner li {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--ink-2);
+  }
+
+  .banner li :global(svg) {
+    color: var(--rose-deep);
+    flex: none;
+  }
+
+  .banner__buy {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 36px;
+  }
+
+  .banner__price {
+    font-family: var(--serif);
+    font-size: 32px;
+  }
+
+  .banner__media {
+    position: relative;
+    min-height: 360px;
+  }
+
+  .banner__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* BENTO */
+  .section-head--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .bento {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  .bento__big {
+    grid-row: span 2;
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    min-height: 520px;
+  }
+
+  .bento__big img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bento__glass {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    max-width: 360px;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 20px 22px;
+  }
+
+  .bento h3 {
+    font-size: 24px;
+  }
+
+  .bento__glass p,
+  .bento__card p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .bento__card {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    gap: 20px;
+    align-items: center;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 14px 14px 14px clamp(20px, 2.5vw, 32px);
+  }
+
+  .bento__card .link-underline {
+    display: inline-block;
+    margin-top: 16px;
+  }
+
+  .bento__card img {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 14px;
+  }
+
+  .bento__card--dark {
+    background: var(--brown);
+    color: var(--on-dark);
+  }
+
+  .bento__card--dark p {
+    color: rgba(245, 237, 230, 0.72);
+  }
+
+  /* RESULTS */
+  .results {
+    background: var(--surface);
+  }
+
+  .quote {
+    margin: 0 auto;
+    max-width: 860px;
+    text-align: center;
+  }
+
+  .quote blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(24px, 2.8vw, 36px);
+    line-height: 1.3;
+  }
+
+  .quote figcaption {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-top: clamp(40px, 5vw, 64px);
+  }
+
+  .strip__item {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--sand);
+  }
+
+  .strip__item img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease);
+  }
+
+  .strip__item:hover img {
+    transform: scale(1.05);
+  }
+
+  .strip__item span {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .results__more {
+    margin-top: 36px;
+  }
+
+  /* NOVO */
+  .novo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+  }
+
+  .novo__card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2.5vw, 32px);
+    align-items: center;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    transition: box-shadow 0.4s var(--ease);
+  }
+
+  .novo__card:hover {
+    box-shadow: 0 24px 48px -32px rgba(59, 37, 33, 0.35);
+  }
+
+  .novo__media {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .novo__media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .novo__body {
+    padding-right: 16px;
+  }
+
+  .novo__body h3 {
+    font-size: clamp(22px, 2vw, 26px);
+    margin-top: 10px;
+  }
+
+  .novo__body p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .novo__body .novo__note {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .novo__body .novo__price {
+    margin-top: 18px;
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--ink);
+  }
+
+  /* KIDS */
+  .kids {
+    padding-top: 0;
+  }
+
+  .kids__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .kids__media img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
+  }
+
+  .kids h2 {
+    font-size: clamp(40px, 5vw, 66px);
+    margin-top: 8px;
+    color: var(--rose-deep);
+  }
+
+  .kids__copy > p:not(.eyebrow) {
+    margin-top: 18px;
+    color: var(--ink-2);
+    max-width: 50ch;
+  }
+
+  .kids__list {
+    margin-block: 28px 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  .kids__list a {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.2s;
+  }
+
+  .kids__list a:hover {
+    color: var(--rose-deep);
+  }
+
+  .kids__list span:last-child {
+    font-weight: 500;
+  }
+
+  /* INSTAGRAM */
+  .insta {
+    padding-bottom: var(--space);
+  }
+
+  .insta h2 {
+    font-size: clamp(28px, 3.2vw, 40px);
+    margin-bottom: 12px;
+  }
+
+  .insta__feed {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    margin-top: 36px;
+  }
+
+  .insta__feed a {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+
+  .insta__feed img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease), opacity 0.3s;
+  }
+
+  .insta__feed a:hover img {
+    transform: scale(1.05);
+    opacity: 0.92;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1080px) {
+    .grid-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .trust {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .strip {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .novo {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 860px) {
+    .hero,
+    .banner,
+    .kids__grid {
+      grid-template-columns: 1fr;
+    }
+    .hero__media {
+      order: -1;
+      min-height: 0;
+      aspect-ratio: 4 / 3;
+    }
+    .banner__media {
+      min-height: 0;
+      aspect-ratio: 4 / 3;
+    }
+    .bento {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+    .bento__big {
+      grid-row: auto;
+      min-height: 0;
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .trust__item {
+      padding: 20px 12px;
+    }
+    .trust__item h3 {
+      font-size: 16px;
+    }
+    .grid-4 {
+      gap: 12px;
+    }
+    .strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .novo__card {
+      grid-template-columns: 1fr;
+    }
+    .novo__body {
+      padding: 4px 8px 12px;
+    }
+    .insta__feed {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .bento__card {
+      grid-template-columns: 1fr;
+      padding: 24px 20px 20px;
+    }
+    .bento__card img {
+      max-height: none;
+      aspect-ratio: 16 / 10;
+      order: -1;
+    }
+  }
+</style>

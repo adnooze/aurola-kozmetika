@@ -1,0 +1,197 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { results, reels } from '../data/results';
+import { SITE, img, url } from '../lib/site';
+
+const quotes = results.filter((r) => r.quote);
+---
+
+<Layout title="Rezultati" description="Stvarni rezultati Aurola korisnica – fotografije prije i poslije korištenja seruma, ampula i spreja za rast kose.">
+  <PageHero
+    eyebrow="Vaše slike · vaše recenzije"
+    title="Rezultati koji <em>govore sami</em>"
+    lead="Fotografije koje su nam poslale naše djevojke nakon korištenja seta za rast, ampula i seruma. Hvala vam što dijelite svoja iskrena iskustva – vaši rezultati su naša motivacija."
+  />
+
+  <section class="section section--quotes">
+    <div class="wrap quotes">
+      {
+        quotes.map((q) => (
+          <blockquote class="reveal">
+            <p>„{q.quote}“</p>
+            <cite>{q.label}</cite>
+          </blockquote>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section section--gallery">
+    <div class="wrap gallery">
+      {
+        results.map((r) => (
+          <figure class="reveal">
+            <Image src={img(r.image)} alt={`Rezultat korisnice prije i poslije: ${r.label}`} widths={[360, 540, 720]} sizes="(max-width: 640px) 100vw, (max-width: 1080px) 50vw, 380px" />
+            <figcaption>{r.label}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section reels">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Savjeti sa našeg Instagrama</h2>
+        <a class="link-underline" href={SITE.instagram} target="_blank" rel="noopener">{SITE.handle}</a>
+      </div>
+      <div class="reels__grid">
+        {
+          reels.map((r) => (
+            <a class="reel" href={SITE.instagram} target="_blank" rel="noopener">
+              <Image src={img(r.image)} alt="" widths={[300, 360]} sizes="(max-width: 640px) 60vw, 300px" />
+              <span>
+                <Icon name="instagram" size={16} /> {r.title}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+      <div class="reels__cta">
+        <a class="btn" href={url('/proizvodi/duo-za-rast-i-oporavak-kose')}>Želim i ja ovakve rezultate</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .section--quotes {
+    padding-bottom: 0;
+  }
+
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  blockquote {
+    margin: 0;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  blockquote p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 21px;
+    line-height: 1.35;
+  }
+
+  cite {
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--rose-deep);
+  }
+
+  .gallery {
+    columns: 3 300px;
+    column-gap: 20px;
+  }
+
+  .gallery figure {
+    margin: 0 0 20px;
+    break-inside: avoid;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .gallery figcaption {
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  .reels {
+    background: var(--surface);
+  }
+
+  .reels__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+  }
+
+  .reel {
+    position: relative;
+    display: block;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 9 / 14;
+  }
+
+  .reel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .reel:hover img {
+    transform: scale(1.04);
+  }
+
+  .reel span {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .reels__cta {
+    margin-top: 40px;
+  }
+
+  @media (max-width: 860px) {
+    .quotes {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .reels__grid {
+      grid-template-columns: repeat(3, 70%);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+    .reel {
+      scroll-snap-align: start;
+    }
+  }
+</style>

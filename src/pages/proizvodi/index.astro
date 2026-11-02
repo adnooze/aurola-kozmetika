@@ -1,0 +1,110 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { categories, inCategory } from '../../data/products';
+import { products } from '../../data/products';
+---
+
+<Layout title="Proizvodi" description="Svi Aurola proizvodi za kosu: serum, ampule, sprej za rast, maske, šampon, balzam, ulja i dječja linija.">
+  <PageHero
+    eyebrow="Asortiman"
+    title="Proizvodi za kosu <em>bez mane</em>"
+    lead={`${products.length} proizvoda na prirodnoj bazi – za rast kose, masno vlasište, svakodnevnu njegu i male princeze.`}
+  >
+    <nav class="chips" aria-label="Kategorije">
+      {categories.map((c) => <a href={`#${c.id}`}>{c.label}</a>)}
+    </nav>
+  </PageHero>
+
+  {
+    categories.map((c) => (
+      <section class="section section--cat" id={c.id}>
+        <div class="wrap">
+          <div class="cat-head">
+            <h2>{c.label}</h2>
+            <p>{c.blurb}</p>
+          </div>
+          <div class="grid">
+            {inCategory(c.id).map((p) => (
+              <ProductCard product={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+</Layout>
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .chips {
+    justify-content: center;
+  }
+
+  .chips a {
+    padding: 8px 18px;
+    border: 1px solid rgba(42, 29, 26, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .chips a:hover {
+    background: var(--brown);
+    border-color: var(--brown);
+    color: var(--on-dark);
+  }
+
+  .section--cat {
+    padding-block: clamp(40px, 6vw, 72px) 0;
+    scroll-margin-top: 80px;
+  }
+
+  .section--cat:last-of-type {
+    padding-bottom: clamp(56px, 8vw, 96px);
+  }
+
+  .cat-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px 24px;
+    flex-wrap: wrap;
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cat-head h2 {
+    font-size: clamp(28px, 3.4vw, 40px);
+  }
+
+  .cat-head p {
+    color: var(--muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap);
+  }
+
+  @media (max-width: 1080px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+  }
+</style>

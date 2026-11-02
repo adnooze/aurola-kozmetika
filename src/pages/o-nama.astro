@@ -1,0 +1,260 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { SITE, img } from '../lib/site';
+import { products } from '../data/products';
+
+const steps = [
+  { title: 'Odaberi proizvode', text: 'Pogledaj proizvode ili katalog i zapiši šta želiš naručiti.' },
+  { title: 'Pošalji poruku', text: `Piši nam u Instagram DM (${SITE.handle}) s nazivom proizvoda, imenom i prezimenom, adresom i brojem telefona.` },
+  { title: 'Potvrda narudžbe', text: 'Javit ćemo ti se s potvrdom i ukupnim iznosom narudžbe.' },
+  { title: 'Dostava na adresu', text: `Paket šaljemo na tvoju adresu. Poštarina iznosi ${SITE.shipping}.` },
+];
+
+const faq = [
+  {
+    q: 'Kada mogu očekivati prve rezultate?',
+    a: 'Uz redovnu upotrebu seruma i aktivnih ampula prvi rezultati mogu biti vidljivi već nakon nekoliko sedmica. Jedan set dovoljan je za oko 2 mjeseca njege.',
+  },
+  {
+    q: 'Koji proizvod je najbolji za opadanje kose?',
+    a: 'Naš najprodavaniji izbor je Duo za rast i oporavak kose – serum sa pet zlatnih ulja i aktivne ampule koje djeluju direktno na tjeme. Za kompletnu rutinu tu je i Trio sa sprejem za rast.',
+  },
+  {
+    q: 'Imam masno vlasište – šta da koristim?',
+    a: 'Maska protiv mašćenja kose s hamamelisom (1× sedmično) i sprej protiv mašćenja pomažu da se balansira lučenje sebuma, pa kosa duže ostaje svježa.',
+  },
+  {
+    q: 'Jesu li proizvodi pogodni za farbanu kosu?',
+    a: 'Da. Balzam za kosu je bez sulfata i posebno je idealan za farbanu, suhu i oštećenu kosu te kosu tretiranu toplotom.',
+  },
+  {
+    q: 'Da li imate proizvode za djecu?',
+    a: 'Imamo – set za male princeze: šampon, balzam i regenerator za djecu, nježne formule bez sapuna i čarobnog mirisa.',
+  },
+];
+---
+
+<Layout title="O nama" description="Aurola – prirodna kozmetika za kosu. Saznaj više o nama i kako naručiti proizvode putem Instagrama.">
+  <PageHero eyebrow="O nama" title="Njega kose <em>s ljubavlju</em>" />
+
+  <section class="section">
+    <div class="wrap about">
+      <div class="about__media reveal">
+        <Image src={img('instagram/katalog-1.jpg')} alt="Aurola prirodna kozmetika – katalog proizvoda" widths={[480, 720]} sizes="(max-width: 860px) 100vw, 520px" />
+      </div>
+      <div class="about__copy reveal">
+        <h2>Prirodna kozmetika za jaču, gušću i ljepšu kosu</h2>
+        <p>
+          Aurola je brend prirodne kozmetike za kosu. Naši proizvodi nastaju na prirodnoj bazi – od biljnih ulja, hidrolata i
+          ekstrakata do pažljivo odabranih aktivnih sastojaka – s jednim ciljem: da pomognemo ženama da imaju jaču, gušću i ljepšu
+          kosu koja brže raste i ne opada.
+        </p>
+        <p>
+          Svaki dan nam stižu poruke i fotografije djevojaka koje su s nama krenule na put oporavka kose. Drago nam je što ste
+          prepoznale naše proizvode – vaši rezultati su za nas najveća motivacija.
+        </p>
+        <div class="about__stats">
+          <div><strong>{SITE.followers}</strong><span>pratiteljica</span></div>
+          <div><strong>{products.length}</strong><span>proizvoda</span></div>
+          <div><strong>{SITE.shipping}</strong><span>poštarina</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section steps" id="narudzba">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Kako naručiti</h2>
+      </div>
+      <ol class="steps__list">
+        {
+          steps.map((s, i) => (
+            <li class="reveal">
+              <span class="steps__num">{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <a class="btn" href={SITE.dm} target="_blank" rel="noopener"><Icon name="chat" /> Pošalji poruku</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap faq">
+      <h2>Česta pitanja</h2>
+      <div>
+        {
+          faq.map((f, i) => (
+            <details open={i === 0}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .about__media img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  .about h2 {
+    font-size: clamp(30px, 3.8vw, 48px);
+  }
+
+  .about__copy p {
+    margin-top: 18px;
+    color: var(--ink-2);
+    max-width: 56ch;
+  }
+
+  .about__stats {
+    display: flex;
+    gap: clamp(24px, 4vw, 56px);
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .about__stats div {
+    display: grid;
+  }
+
+  .about__stats strong {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 500;
+  }
+
+  .about__stats span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .steps {
+    background: var(--sand);
+  }
+
+  .steps__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .steps__list li {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+  }
+
+  .steps__num {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brown);
+    color: var(--on-dark);
+    font-family: var(--serif);
+    font-size: 18px;
+  }
+
+  .steps h3 {
+    margin-top: 18px;
+    font-size: 22px;
+  }
+
+  .steps p {
+    margin-top: 8px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+
+  .faq {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(24px, 5vw, 72px);
+  }
+
+  .faq h2 {
+    font-size: clamp(30px, 3.8vw, 48px);
+  }
+
+  .faq details {
+    border-top: 1px solid var(--line);
+  }
+
+  .faq details:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 20px 0;
+    font-family: var(--serif);
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary::after {
+    content: '+';
+    font-family: var(--sans);
+    font-weight: 300;
+  }
+
+  .faq details[open] summary::after {
+    content: '–';
+  }
+
+  .faq details p {
+    padding-bottom: 20px;
+    color: var(--ink-2);
+    max-width: 60ch;
+  }
+
+  @media (max-width: 1080px) {
+    .steps__list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .about,
+    .faq {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .steps__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
